@@ -25,7 +25,7 @@ define([], function() {
             }
 
             var textarea = document.createElement('textarea');
-            textarea.innerHTML = text;
+            textarea.textContent = text;
             return textarea.value;
         }
 
