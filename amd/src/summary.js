@@ -19,13 +19,30 @@ define([], function() {
             return null;
         }
 
+        function decodeHtmlEntities(text) {
+            if (!text || text.indexOf('&') === -1) {
+                return text;
+            }
+
+            return text
+                .replace(/&quot;/g, '"')
+                .replace(/&#34;/g, '"')
+                .replace(/&apos;/g, '\'')
+                .replace(/&#39;/g, '\'')
+                .replace(/&lt;/g, '<')
+                .replace(/&#60;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&#62;/g, '>')
+                .replace(/&amp;/g, '&')
+                .replace(/&#38;/g, '&');
+        }
+
         try {
             return JSON.parse(dataText);
         } catch (error) {
-            var tmp = document.createElement('textarea');
-            tmp.innerHTML = dataText;
+            var decodedText = decodeHtmlEntities(dataText);
             try {
-                return JSON.parse(tmp.value);
+                return JSON.parse(decodedText);
             } catch (error2) {
                 return null;
             }
