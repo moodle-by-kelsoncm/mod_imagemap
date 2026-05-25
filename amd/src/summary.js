@@ -24,17 +24,9 @@ define([], function() {
                 return text;
             }
 
-            return text
-                .replace(/&quot;/g, '"')
-                .replace(/&#34;/g, '"')
-                .replace(/&apos;/g, '\'')
-                .replace(/&#39;/g, '\'')
-                .replace(/&lt;/g, '<')
-                .replace(/&#60;/g, '<')
-                .replace(/&gt;/g, '>')
-                .replace(/&#62;/g, '>')
-                .replace(/&amp;/g, '&')
-                .replace(/&#38;/g, '&');
+            var textarea = document.createElement('textarea');
+            textarea.innerHTML = text;
+            return textarea.value;
         }
 
         try {
