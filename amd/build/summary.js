@@ -22,13 +22,7 @@ define([], function() {
         try {
             return JSON.parse(dataText);
         } catch (error) {
-            var tmp = document.createElement('textarea');
-            tmp.innerHTML = dataText;
-            try {
-                return JSON.parse(tmp.value);
-            } catch (error2) {
-                return null;
-            }
+            return null;
         }
     }
 
