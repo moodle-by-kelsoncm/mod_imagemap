@@ -28,3 +28,5 @@ package-lock.json
 /.pre-commit-framework/
 .pre-commit-framework.egg-info
 
+
+docs/_build/
