@@ -1,3 +1,28 @@
+/*
+ * This file is part of Moodle - https://moodle.org/
+ *
+ * Moodle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Moodle is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
+ * Styles of the image map activity, its area editor and the CSS examples administration.
+ *
+ * @package    mod_imagemap
+ * @copyright  2026 Kelson C. M.
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 .mod_imagemap .imagemap-container {
     position: relative;
     display: inline-block;
@@ -26,6 +51,26 @@
     opacity: 0.8;
 }
 
+.imagemap-view {
+    position: relative;
+    display: inline-block;
+}
+
+.imagemap-view canvas {
+    display: block;
+}
+
+.imagemap-view .imagemap-overlays {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.imagemap-view .imagemap-area-overlay {
+    position: absolute;
+    background-repeat: no-repeat;
+}
+
 .imagemap-tooltip {
     position: absolute;
     z-index: 1000;
@@ -33,10 +78,329 @@
     padding: 8px 10px;
     border-radius: 6px;
     background: #1f1f1f;
-    color: #ffffff;
+    color: #fff;
     font-size: 12px;
     line-height: 1.4;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
     display: none;
 }
 
+
+/* Area editor (editor.css). */
+.path-mod-imagemap .imagemap-editor-container {
+    max-width: 100%;
+    margin: 20px 0;
+}
+
+.path-mod-imagemap .imagemap-canvas-wrapper {
+    position: relative;
+    display: inline-block;
+    border: 2px solid #ddd;
+}
+
+.path-mod-imagemap #imagemap-canvas {
+    display: block;
+    cursor: crosshair;
+}
+
+.path-mod-imagemap .imagemap-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1040;
+    display: none;
+}
+
+.path-mod-imagemap #area-form-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    padding: 16px 18px;
+    width: 520px;
+    max-width: 95vw;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.path-mod-imagemap .area-controls {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 5px;
+}
+
+/* Toolbar styles */
+.path-mod-imagemap .imagemap-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.path-mod-imagemap .imagemap-toolbar .btn-group-toggle .toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    transition: all 0.15s ease;
+}
+
+.path-mod-imagemap .imagemap-toolbar .btn-group-toggle .toolbar-btn svg {
+    flex-shrink: 0;
+}
+
+.path-mod-imagemap .imagemap-toolbar .btn-group-toggle .toolbar-btn.active {
+    z-index: 2;
+}
+
+.path-mod-imagemap .toolbar-btn[data-tool="hand"].active {
+    background-color: #6c757d;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+.path-mod-imagemap .toolbar-btn[data-tool="rect"].active,
+.path-mod-imagemap .toolbar-btn[data-tool="circle"].active,
+.path-mod-imagemap .toolbar-btn[data-tool="poly"].active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.path-mod-imagemap .toolbar-btn[data-tool="line"].active {
+    background-color: #17a2b8;
+    color: #fff;
+    border-color: #17a2b8;
+}
+
+.path-mod-imagemap .toolbar-btn[data-tool="eraser"].active {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+.path-mod-imagemap .toolbar-status {
+    margin-left: auto;
+    font-size: 12px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.path-mod-imagemap .area-list {
+    margin-top: 20px;
+}
+
+.path-mod-imagemap .area-item {
+    padding: 10px;
+    margin: 5px 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.path-mod-imagemap .area-item:hover {
+    background: #f9f9f9;
+}
+
+/* CSS Input styling */
+.path-mod-imagemap .css-input {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    resize: vertical;
+}
+
+.path-mod-imagemap .css-input:focus {
+    background-color: #fff;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+}
+
+.path-mod-imagemap .css-input.is-valid {
+    border-color: #28a745;
+}
+
+.path-mod-imagemap .css-input.is-invalid {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.path-mod-imagemap #activefilter-preview,
+.path-mod-imagemap #inactivefilter-preview {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.path-mod-imagemap #activefilter-preview-box,
+.path-mod-imagemap #inactivefilter-preview-box {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* CSS Examples Modal Styles */
+.path-mod-imagemap #css-examples-modal .css-example-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+}
+
+.path-mod-imagemap #css-examples-modal .css-example-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.path-mod-imagemap #css-examples-modal .css-example-card .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.path-mod-imagemap #css-examples-modal .css-example-card .card-body {
+    padding: 10px 12px;
+}
+
+.path-mod-imagemap #css-examples-modal .css-example-card .card-footer {
+    padding: 8px 12px;
+    border-top: 1px solid #dee2e6;
+}
+
+.path-mod-imagemap #css-examples-modal .css-preview-canvas {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    display: block;
+    margin: 0 auto;
+}
+
+.path-mod-imagemap #css-examples-modal .select-example-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+.path-mod-imagemap #css-examples-modal .nav-tabs {
+    border-bottom: 2px solid #dee2e6;
+}
+
+.path-mod-imagemap #css-examples-modal .nav-tabs .nav-link {
+    color: #495057;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 8px 12px;
+}
+
+.path-mod-imagemap #css-examples-modal .nav-tabs .nav-link:hover {
+    border-bottom-color: #0073e6;
+    color: #0073e6;
+}
+
+.path-mod-imagemap #css-examples-modal .nav-tabs .nav-link.active {
+    color: #0073e6;
+    background-color: transparent;
+    border-bottom-color: #0073e6;
+}
+
+
+/* CSS examples administration (styles/admin.css). */
+/* CSS para prévia dos exemplos */
+.path-mod-imagemap .css-preview-canvas {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+    max-width: 100%;
+    height: auto;
+}
+
+.path-mod-imagemap .css-preview-canvas:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.path-mod-imagemap .css-preview {
+    margin-bottom: 10px;
+}
+
+.path-mod-imagemap .css-preview small {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+/* CSS para abas customizadas */
+.path-mod-imagemap .css-tabs-container {
+    position: relative;
+}
+
+.path-mod-imagemap .css-tabs-container input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.path-mod-imagemap .css-tabs {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.path-mod-imagemap .css-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+    position: relative;
+    top: 1px;
+}
+
+.path-mod-imagemap .css-tab:hover {
+    background: #e9ecef;
+}
+
+/* Estilo para aba ativa */
+.path-mod-imagemap .css-tabs-container input#tab-active:checked ~ .css-tabs label[for="tab-active"],
+.path-mod-imagemap .css-tabs-container input#tab-inactive:checked ~ .css-tabs label[for="tab-inactive"],
+.path-mod-imagemap .css-tabs-container input#tab-active-hover:checked ~ .css-tabs label[for="tab-active-hover"],
+.path-mod-imagemap .css-tabs-container input#tab-inactive-hover:checked ~ .css-tabs label[for="tab-inactive-hover"] {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    border-bottom-color: #007bff;
+    font-weight: bold;
+}
+
+.path-mod-imagemap .css-tab-content {
+    position: relative;
+}
+
+.path-mod-imagemap .css-tab-pane {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Mostrar painel ativo */
+.path-mod-imagemap .css-tabs-container input#tab-active:checked ~ .css-tab-content #active-pane,
+.path-mod-imagemap .css-tabs-container input#tab-inactive:checked ~ .css-tab-content #inactive-pane,
+.path-mod-imagemap .css-tabs-container input#tab-active-hover:checked ~ .css-tab-content #active-hover-pane,
+.path-mod-imagemap .css-tabs-container input#tab-inactive-hover:checked ~ .css-tab-content #inactive-hover-pane {
+    display: block;
+    opacity: 1;
+}

@@ -42,9 +42,6 @@ $PAGE->set_url('/mod/imagemap/areas.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($imagemap->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->requires->css('/mod/imagemap/editor.css');
-$PAGE->requires->css('/mod/imagemap/styles.css');
-$PAGE->requires->js('/mod/imagemap/css_preview.js');
 
 // Handle actions.
 if ($action === 'delete' && $areaid && confirm_sesskey()) {
@@ -332,13 +329,29 @@ if ($imagefile) {
     ];
     $cssexamplesmodal = $OUTPUT->render_from_template('mod_imagemap/css_examples_modal', $modaldata);
 
-    // Debug: Check examples count.
-    echo "<!-- Debug: Active examples: " . count($activeexamples) . " | Inactive examples: " . count($inactiveexamples) . " -->\n";
-
     $templatedata = [
         'has_image' => true,
-        'imageUrl' => $imageurl->out(),
-        'areasData' => $areasdata,
+        'config' => json_encode([
+            'imageUrl' => $imageurl->out(false),
+            'areasData' => $areasdata,
+            'linesData' => $linesdata,
+            'sesskey' => sesskey(),
+            'cmid' => (int)$cm->id,
+            'imagemapid' => (int)$imagemap->id,
+            'strings' => [
+                'addarea' => get_string('addarea', 'imagemap'),
+                'editarea' => get_string('editarea', 'imagemap'),
+                'confirmdeletearea' => get_string('confirmdeletearea', 'imagemap'),
+                'line_select_source' => get_string('line_select_source', 'imagemap'),
+                'line_select_dest' => get_string('line_select_dest', 'imagemap'),
+                'line_same_area' => get_string('line_same_area', 'imagemap'),
+                'line_duplicate' => get_string('line_duplicate', 'imagemap'),
+                'line_saved' => get_string('line_saved', 'imagemap'),
+                'line_deleted' => get_string('line_deleted', 'imagemap'),
+                'eraser_hint' => get_string('eraser_hint', 'imagemap'),
+                'confirm_delete_line' => get_string('confirm_delete_line', 'imagemap'),
+            ],
+        ]),
         'cmid' => $cm->id,
         'imagemapid' => $imagemap->id,
         'sesskey' => sesskey(),
@@ -379,36 +392,7 @@ if ($imagefile) {
         'connections_label' => get_string('connections', 'imagemap'),
     ];
 
-    // Load editor script inline instead of external to avoid loading issues.
-    $jscode = file_get_contents(__DIR__ . '/editor.js');
-    $PAGE->requires->js_init_code('
-        window.imagemapEditorData = ' . json_encode([
-            'imageUrl' => $imageurl->out(),
-            'areasData' => $areasdata,
-            'linesData' => $linesdata,
-            'sesskey' => sesskey(),
-            'cmid' => $cm->id,
-            'imagemapid' => $imagemap->id,
-            'strings' => [
-                'addarea' => get_string('addarea', 'imagemap'),
-                'editarea' => get_string('editarea', 'imagemap'),
-                'confirmdeletearea' => get_string('confirmdeletearea', 'imagemap'),
-                'line_select_source' => get_string('line_select_source', 'imagemap'),
-                'line_select_dest' => get_string('line_select_dest', 'imagemap'),
-                'line_same_area' => get_string('line_same_area', 'imagemap'),
-                'line_duplicate' => get_string('line_duplicate', 'imagemap'),
-                'line_saved' => get_string('line_saved', 'imagemap'),
-                'line_deleted' => get_string('line_deleted', 'imagemap'),
-                'eraser_hint' => get_string('eraser_hint', 'imagemap'),
-                'confirm_delete_line' => get_string('confirm_delete_line', 'imagemap'),
-            ],
-        ]) . ';
-        ' . $jscode . '
-        // Initialize when DOM is ready.
-        if (typeof ImageMapEditor !== "undefined") {
-            ImageMapEditor.init();
-        }
-    ');
+    $PAGE->requires->js_call_amd('mod_imagemap/editor', 'init', ['#imagemap-editor']);
 } else {
     $templatedata = [
         'has_image' => false,
@@ -416,11 +400,7 @@ if ($imagefile) {
     ];
 }
 
+$templatedata['back_url'] = (new moodle_url('/mod/imagemap/view.php', ['id' => $cm->id]))->out(false);
 echo $OUTPUT->render_from_template('mod_imagemap/editor', $templatedata);
-
-echo '<div class="mt-3">';
-echo '<a href="' . new moodle_url('/mod/imagemap/view.php', ['id' => $cm->id]) . '" class="btn btn-secondary">' .
-     get_string('back') . '</a>';
-echo '</div>';
 
 echo $OUTPUT->footer();

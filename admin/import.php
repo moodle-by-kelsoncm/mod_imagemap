@@ -25,7 +25,7 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/lib.php');
 
-mod_imagemap_admin_require_access();
+require_admin();
 mod_imagemap_admin_setup_page('/mod/imagemap/admin/import.php');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -72,11 +72,11 @@ foreach ($importdata as $item) {
 
     $existing = $DB->get_record('imagemap_css_examples', [
         'type' => $dbtype,
-        'name' => $item['name'],
+        'name' => clean_param((string)$item['name'], PARAM_TEXT),
     ]);
 
     if ($existing) {
-        $existing->css_text = $item['css_text'];
+        $existing->css_text = \mod_imagemap\local\css_rules::clean((string)$item['css_text']);
         $existing->timemodified = time();
         $DB->update_record('imagemap_css_examples', $existing);
         $updated++;
@@ -88,8 +88,8 @@ foreach ($importdata as $item) {
 
         $record = new stdClass();
         $record->type = $dbtype;
-        $record->name = $item['name'];
-        $record->css_text = $item['css_text'];
+        $record->name = clean_param((string)$item['name'], PARAM_TEXT);
+        $record->css_text = \mod_imagemap\local\css_rules::clean((string)$item['css_text']);
         $record->sortorder = ($maxorder === null ? -1 : (int)$maxorder) + 1;
         $record->timecreated = time();
         $record->timemodified = time();

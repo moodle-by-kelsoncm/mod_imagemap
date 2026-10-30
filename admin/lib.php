@@ -28,16 +28,6 @@ require_once(__DIR__ . '/../lib.php');
 require_login();
 
 /**
- * Require admin access for CSS examples management.
- */
-function mod_imagemap_admin_require_access(): void {
-    require_login();
-    if (!is_siteadmin()) {
-        throw new moodle_exception('accessdenied', 'admin');
-    }
-}
-
-/**
  * Common page setup for admin pages.
  *
  * @param string $url

@@ -1,7 +1,33 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_imagemap/view
+
+    Image map shown to students, with the clickable areas drawn over the image.
+
+    The config is the JSON read by mod_imagemap/view: image URL, areas and lines.
+
+    Example context (json):
+    {"has_image": true, "imagemap_id": 1, "config": "{\"imageurl\": \"\", \"areas\": [], \"lines\": []}"}
+}}
 {{#has_image}}
-<div class="imagemap-container" style="position: relative; display: inline-block;">
-    <canvas id="imagemap-canvas-{{imagemap_id}}" style="display: block;"></canvas>
-    <div id="imagemap-overlays-{{imagemap_id}}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+<div id="imagemap-view-{{imagemap_id}}" class="imagemap-view" data-config="{{config}}">
+    <canvas></canvas>
+    <div class="imagemap-overlays"></div>
 </div>
 {{#has_manage}}
 <div class="imagemap-manage">

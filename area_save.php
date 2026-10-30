@@ -35,12 +35,19 @@ $coords = required_param('coords', PARAM_TEXT);
 $title = required_param('title', PARAM_TEXT);
 $targettype = required_param('targettype', PARAM_ALPHA);
 $targetid = required_param('targetid', PARAM_INT);
-$activefilter = optional_param('activefilter', 'none', PARAM_RAW);
-$inactivefilter = optional_param('inactivefilter', 'filter: grayscale(1);', PARAM_RAW);
+// The CSS is free text checked against a list of allowed properties by css_rules::clean().
+$activefilter = \mod_imagemap\local\css_rules::clean(optional_param('activefilter', 'none', PARAM_TEXT));
+$inactivefilter = \mod_imagemap\local\css_rules::clean(
+    optional_param('inactivefilter', 'filter: grayscale(1);', PARAM_TEXT)
+);
 
 $cm = get_coursemodule_from_id('imagemap', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
-$imagemap = $DB->get_record('imagemap', ['id' => $imagemapid], '*', MUST_EXIST);
+// The image map must be the one of the course module the capability is checked on.
+if ((int)$imagemapid !== (int)$cm->instance) {
+    throw new moodle_exception('invalidrecord', 'error', '', 'imagemap');
+}
+$imagemap = $DB->get_record('imagemap', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, true, $cm);
 
@@ -49,12 +56,12 @@ require_capability('mod/imagemap:manage', $context);
 
 // Validate shape.
 if (!in_array($shape, ['circle', 'rect', 'poly'])) {
-    print_error('error:invalidshape', 'imagemap');
+    throw new moodle_exception('error:invalidshape', 'imagemap');
 }
 
 // Validate target type.
 if (!in_array($targettype, ['module', 'section'])) {
-    print_error('error:invalidtargettype', 'imagemap');
+    throw new moodle_exception('error:invalidtargettype', 'imagemap');
 }
 
 $area = new stdClass();
@@ -70,13 +77,13 @@ $area->inactivefilter = $inactivefilter;
 if ($targettype === 'module') {
     $targetcm = get_coursemodule_from_id(null, $targetid, $course->id, false, IGNORE_MISSING);
     if (!$targetcm) {
-        print_error('error:invalidtarget', 'imagemap');
+        throw new moodle_exception('error:invalidtarget', 'imagemap');
     }
 } else if ($targettype === 'section') {
     $modinfo = get_fast_modinfo($course);
     $targetsection = $modinfo->get_section_info_by_id($targetid, IGNORE_MISSING);
     if (!$targetsection) {
-        print_error('error:invalidtarget', 'imagemap');
+        throw new moodle_exception('error:invalidtarget', 'imagemap');
     }
 }
 
