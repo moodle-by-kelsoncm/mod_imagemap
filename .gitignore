@@ -30,3 +30,9 @@ package-lock.json
 
 
 docs/_build/
+
+# Documentation and release builds
+docs/_build/
+_site/
+dist/
+*.zip

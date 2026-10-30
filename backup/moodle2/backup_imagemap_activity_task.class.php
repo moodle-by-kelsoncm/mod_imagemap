@@ -52,6 +52,9 @@ class backup_imagemap_activity_task extends backup_activity_task {
     /**
      * Code the transformations to perform in the activity in
      * order to get transportable (encoded) links
+     *
+     * @param string $content Content with links.
+     * @return string Content with the links encoded.
      */
     public static function encode_content_links($content) {
         global $CFG;

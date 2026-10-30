@@ -1,10 +1,14 @@
-Backup and Restore
+Backup and restore
 ==================
 
-Compatibility with Moodle Backup/Restore
-----------------------------------------
+Image maps are included in course backups, imports and in the duplication of activities, with their image, description files, areas and lines.
 
-The `mod_imagemap` plugin implements Moodle's backup and restore API:
+* When the whole course is restored, each area points to the copy of its activity or section in the new course, whatever their order in the course.
+* When only the image map is restored or duplicated, areas that point to items of the same course keep them; areas that point to items outside the backup lose their target and must be linked again.
+* The CSS of the areas is cleaned again on restore (see :doc:`configuration`).
+* The CSS examples of the source site travel with the backup and are added to the target site when an example with the same type and name does not exist yet.
 
-- Image metadata and mapped area coordinates are serialized into the backup file (`.mbz`).
-- During restore to a new course or new site, internal links to activities in the same course are automatically remapped to the new module IDs.
+Privacy
+-------
+
+The plugin stores no personal data: areas, lines and CSS examples are course and site content. It implements the Privacy API as a null provider.

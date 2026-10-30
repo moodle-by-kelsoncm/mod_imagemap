@@ -3,7 +3,7 @@ import moodle_docs_theme
 project = "moodle-mod_imagemap"
 copyright = "2026, Kelson C. M."
 author = "Kelson C. M."
-release = "1.2.08"
+release = "1.3.0"
 
 extensions = [
     "sphinx.ext.githubpages",
@@ -24,11 +24,11 @@ html_theme_options = {
     "github_url": "https://github.com/moodle-by-kelsoncm/mod_imagemap",
     "github_repo": "moodle-by-kelsoncm/mod_imagemap",
     "github_version": "main",
-    "doc_path": "docs/pt-br/",
+    "doc_path": "docs/pt_BR/",
     "show_edit_on_github": True,
     "enable_dark_mode": True,
     "enable_language_selector": True,
-    "navigation_links": "Início|index, Instalação|installation, Configuração|configuration, Uso|usage, Guia Admin|admin_guide, Backup/Restore|backup_restore",
+    "navigation_links": "Início|index, Instalação|installation, Configuração|configuration, Uso|usage, Backup e restauração|backup_restore",
 }
 
 html_static_path = []
