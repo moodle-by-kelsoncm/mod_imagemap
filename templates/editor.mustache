@@ -19,11 +19,13 @@
 
     Area editor: toolbar, canvas and list of areas.
 
+    The config is the JSON read by mod_imagemap/editor: image URL, areas, lines and strings.
+
     Example context (json):
-    {"has_image": false, "noimage": "No image"}
+    {"has_image": false, "error_noimage": "No image", "back_url": "#"}
 }}
 {{#has_image}}
-<div class="imagemap-editor-container">
+<div id="imagemap-editor" class="imagemap-editor-container" data-config="{{config}}">
     <div class="area-controls imagemap-toolbar">
         <div class="btn-group btn-group-toggle" role="group" aria-label="Tools">
             <button type="button" class="btn btn-outline-secondary toolbar-btn active" data-tool="hand" title="{{tool_hand}}">
@@ -155,7 +157,7 @@
                 <td>
                     <a href="{{delete_url}}"
                        class="btn btn-sm btn-danger"
-                       onclick="return confirm('{{confirmdeletearea}}');">
+                       data-action="mod_imagemap/delete-area">
                         {{delete}}
                     </a>
                 </td>
@@ -169,9 +171,13 @@
     {{/has_areas}}
 </div>
 
-{{else}}
+{{/has_image}}
+{{^has_image}}
 <div class="alert alert-warning">{{error_noimage}}</div>
 {{/has_image}}
 
-<!-- CSS Examples Modal -->
 {{{css_examples_modal}}}
+
+<div class="mt-3">
+    <a href="{{back_url}}" class="btn btn-secondary">{{#str}}back{{/str}}</a>
+</div>

@@ -560,6 +560,11 @@ function imagemap_prepare_render_data($imagemap, $cm, $context, $displaydata, $i
     $templatedata = [
         'has_image' => !empty($imagefile),
         'imagemap_id' => $imagemap->id,
+        'config' => json_encode([
+            'imageurl' => $imageurl ? $imageurl->out(false) : '',
+            'areas' => $areadata,
+            'lines' => $linesviewdata,
+        ]),
         'has_manage' => has_capability('mod/imagemap:manage', $context),
         'manage_url' => new moodle_url('/mod/imagemap/areas.php', ['id' => $cm->id]),
         'manage_text' => get_string('managereas', 'imagemap'),
@@ -601,12 +606,7 @@ function imagemap_render_content_with_script($imagemap, $cm, $context, $course, 
 
     // Initialize JavaScript.
     if (!empty($imagefile)) {
-        $PAGE->requires->js_call_amd('mod_imagemap/view', 'init', [
-            $imagemap->id,
-            $renderdata['areadata'],
-            $renderdata['imageurl']->out(),
-            $renderdata['linesviewdata'],
-        ]);
+        $PAGE->requires->js_call_amd('mod_imagemap/view', 'init', ['#imagemap-view-' . $imagemap->id]);
     }
 
     return $content;

@@ -51,6 +51,26 @@
     opacity: 0.8;
 }
 
+.imagemap-view {
+    position: relative;
+    display: inline-block;
+}
+
+.imagemap-view canvas {
+    display: block;
+}
+
+.imagemap-view .imagemap-overlays {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.imagemap-view .imagemap-area-overlay {
+    position: absolute;
+    background-repeat: no-repeat;
+}
+
 .imagemap-tooltip {
     position: absolute;
     z-index: 1000;
@@ -58,7 +78,7 @@
     padding: 8px 10px;
     border-radius: 6px;
     background: #1f1f1f;
-    color: #ffffff;
+    color: #fff;
     font-size: 12px;
     line-height: 1.4;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
@@ -208,7 +228,7 @@
 .path-mod-imagemap .css-input:focus {
     background-color: #fff;
     border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
 }
 
 .path-mod-imagemap .css-input.is-valid {
@@ -300,14 +320,14 @@
     border: 2px solid #dee2e6;
     border-radius: 8px;
     background: #f8f9fa;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.2s ease;
     max-width: 100%;
     height: auto;
 }
 
 .path-mod-imagemap .css-preview-canvas:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .path-mod-imagemap .css-preview {
