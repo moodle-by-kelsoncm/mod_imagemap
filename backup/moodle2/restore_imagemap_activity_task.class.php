@@ -67,8 +67,11 @@ class restore_imagemap_activity_task extends restore_activity_task {
             if (!isset($itemnames[$area->targettype]) || empty($area->targetid)) {
                 continue;
             }
-            $mapping = restore_dbops::get_backup_ids_record($this->get_restoreid(), $itemnames[$area->targettype],
-                $area->targetid);
+            $mapping = restore_dbops::get_backup_ids_record(
+                $this->get_restoreid(),
+                $itemnames[$area->targettype],
+                $area->targetid
+            );
             if ($mapping && $mapping->newitemid) {
                 $newid = (int)$mapping->newitemid;
             } else if ($DB->record_exists($tables[$area->targettype], ['id' => $area->targetid, 'course' => $courseid])) {

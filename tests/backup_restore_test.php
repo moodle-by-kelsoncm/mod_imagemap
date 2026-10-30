@@ -438,18 +438,32 @@ final class backup_restore_test extends \restore_date_testcase {
     private function backup_and_restore_course(int $courseid): int {
         global $CFG;
 
-        $bc = new \backup_controller(backup::TYPE_1COURSE, $courseid, backup::FORMAT_MOODLE,
-            backup::INTERACTIVE_NO, backup::MODE_GENERAL, $this->userid);
+        $bc = new \backup_controller(
+            backup::TYPE_1COURSE,
+            $courseid,
+            backup::FORMAT_MOODLE,
+            backup::INTERACTIVE_NO,
+            backup::MODE_GENERAL,
+            $this->userid
+        );
         $backupid = $bc->get_backupid();
         $bc->execute_plan();
         $results = $bc->get_results();
-        $results['backup_destination']->extract_to_pathname(get_file_packer('application/vnd.moodle.backup'),
-            $CFG->tempdir . '/backup/' . $backupid);
+        $results['backup_destination']->extract_to_pathname(
+            get_file_packer('application/vnd.moodle.backup'),
+            $CFG->tempdir . '/backup/' . $backupid
+        );
         $bc->destroy();
 
         $newcourseid = \restore_dbops::create_new_course('Restored', 'R' . $courseid, get_course($courseid)->category);
-        $rc = new \restore_controller($backupid, $newcourseid, backup::INTERACTIVE_NO, backup::MODE_GENERAL,
-            $this->userid, backup::TARGET_NEW_COURSE);
+        $rc = new \restore_controller(
+            $backupid,
+            $newcourseid,
+            backup::INTERACTIVE_NO,
+            backup::MODE_GENERAL,
+            $this->userid,
+            backup::TARGET_NEW_COURSE
+        );
         $this->assertTrue($rc->execute_precheck());
         $rc->execute_plan();
         $rc->destroy();
