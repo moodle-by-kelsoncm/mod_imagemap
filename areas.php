@@ -42,8 +42,6 @@ $PAGE->set_url('/mod/imagemap/areas.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($imagemap->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->requires->css('/mod/imagemap/editor.css');
-$PAGE->requires->css('/mod/imagemap/styles.css');
 $PAGE->requires->js('/mod/imagemap/css_preview.js');
 
 // Handle actions.

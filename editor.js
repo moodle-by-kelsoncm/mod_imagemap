@@ -1,3 +1,26 @@
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Legacy area editor, loaded by areas.php.
+ *
+ * @package    mod_imagemap
+ * @copyright  2026 Kelson C. M.
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 var ImageMapEditor = {
     init: function() {
         var data = window.imagemapEditorData || {};
@@ -1389,97 +1412,68 @@ var ImageMapEditor = {
             return inside;
         }
 
+        // ===== External services (core/ajax) =====
+        function callService(methodname, args) {
+            return new Promise(function(resolve, reject) {
+                require(['core/ajax'], function(Ajax) {
+                    Ajax.call([{methodname: methodname, args: args}])[0].then(resolve).catch(reject);
+                });
+            });
+        }
+
+        function errorMessage(err, fallback) {
+            return (err && (err.message || err.error)) || fallback;
+        }
+
         // ===== AJAX: Save area coords (move/resize) =====
         function saveAreaCoords(area) {
-            var params = new URLSearchParams();
-            params.append('sesskey', data.sesskey || '');
-            params.append('cmid', data.cmid || '');
-            params.append('areaid', area.id);
-            params.append('coords', area.coords);
-
-            fetch(M.cfg.wwwroot + '/mod/imagemap/area_update_coords.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: params.toString()
-            })
-            .then(function(resp) { return resp.json(); })
-            .then(function(result) {
-                if (!result.success) {
-                    console.error('Error saving coords:', result.error);
-                    setStatus(result.error || 'Error saving position');
-                }
-            })
-            .catch(function(err) {
-                console.error('Error saving coords:', err);
-                setStatus('Error saving position');
+            callService('mod_imagemap_update_area_coords', {
+                cmid: parseInt(data.cmid, 10),
+                areaid: parseInt(area.id, 10),
+                coords: String(area.coords)
+            }).catch(function(err) {
+                setStatus(errorMessage(err, 'Error saving position'));
             });
         }
 
         // ===== AJAX: Save line =====
         function saveLine(fromAreaId, toAreaId) {
-            var params = new URLSearchParams();
-            params.append('sesskey', data.sesskey || '');
-            params.append('cmid', data.cmid || '');
-            params.append('imagemapid', data.imagemapid || '');
-            params.append('from_areaid', fromAreaId);
-            params.append('to_areaid', toAreaId);
-
-            fetch(M.cfg.wwwroot + '/mod/imagemap/line_save.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: params.toString()
-            })
-            .then(function(resp) { return resp.json(); })
-            .then(function(result) {
-                if (result.success) {
-                    linesData.push({
-                        id: result.id,
-                        from_areaid: fromAreaId,
-                        to_areaid: toAreaId
-                    });
-                    drawBase();
-                    setStatus(data.strings.line_saved || 'Line saved');
-                    setTimeout(function() {
-                        setStatus(data.strings.line_select_source || 'Click source shape');
-                    }, 1500);
-                } else {
-                    setStatus(result.error || 'Error saving line');
-                }
-            })
-            .catch(function(err) {
-                console.error('Error saving line:', err);
-                setStatus('Error saving line');
+            callService('mod_imagemap_save_line', {
+                cmid: parseInt(data.cmid, 10),
+                fromareaid: parseInt(fromAreaId, 10),
+                toareaid: parseInt(toAreaId, 10)
+            }).then(function(result) {
+                linesData.push({
+                    id: result.id,
+                    from_areaid: fromAreaId,
+                    to_areaid: toAreaId
+                });
+                drawBase();
+                setStatus(data.strings.line_saved || 'Line saved');
+                setTimeout(function() {
+                    setStatus(data.strings.line_select_source || 'Click source shape');
+                }, 1500);
+                return result;
+            }).catch(function(err) {
+                setStatus(errorMessage(err, 'Error saving line'));
             });
         }
 
         // ===== AJAX: Delete line =====
         function deleteLine(line) {
-            var params = new URLSearchParams();
-            params.append('sesskey', data.sesskey || '');
-            params.append('cmid', data.cmid || '');
-            params.append('lineid', line.id);
-
-            fetch(M.cfg.wwwroot + '/mod/imagemap/line_delete.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: params.toString()
-            })
-            .then(function(resp) { return resp.json(); })
-            .then(function(result) {
-                if (result.success) {
-                    linesData = linesData.filter(function(l) { return l.id !== line.id; });
-                    drawBase();
-                    setStatus(data.strings.line_deleted || 'Line deleted');
-                    setTimeout(function() {
-                        setStatus(data.strings.eraser_hint || 'Click a shape or line to delete');
-                    }, 1500);
-                } else {
-                    setStatus(result.error || 'Error deleting line');
-                }
-            })
-            .catch(function(err) {
-                console.error('Error deleting line:', err);
-                setStatus('Error deleting line');
+            callService('mod_imagemap_delete_line', {
+                cmid: parseInt(data.cmid, 10),
+                lineid: parseInt(line.id, 10)
+            }).then(function(result) {
+                linesData = linesData.filter(function(l) { return l.id !== line.id; });
+                drawBase();
+                setStatus(data.strings.line_deleted || 'Line deleted');
+                setTimeout(function() {
+                    setStatus(data.strings.eraser_hint || 'Click a shape or line to delete');
+                }, 1500);
+                return result;
+            }).catch(function(err) {
+                setStatus(errorMessage(err, 'Error deleting line'));
             });
         }
 
