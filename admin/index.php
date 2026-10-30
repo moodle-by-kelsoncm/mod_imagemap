@@ -28,7 +28,6 @@ require_once(__DIR__ . '/lib.php');
 mod_imagemap_admin_require_access();
 mod_imagemap_admin_setup_page('/mod/imagemap/admin/index.php');
 
-$PAGE->requires->css('/mod/imagemap/styles/admin.css');
 $PAGE->requires->js('/mod/imagemap/css_preview.js');
 
 echo $OUTPUT->header();

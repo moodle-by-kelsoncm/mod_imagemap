@@ -80,6 +80,8 @@ class restore_imagemap_activity_structure_step extends restore_activity_structur
 
         $data = (object)$data;
         $data->imagemapid = $this->get_new_parentid('imagemap');
+        $data->activefilter = \mod_imagemap\local\css_rules::clean($data->activefilter ?? null);
+        $data->inactivefilter = \mod_imagemap\local\css_rules::clean($data->inactivefilter ?? null);
 
         // The targetid keeps the old course module or section id for now: activities after this one
         // are not restored yet. restore_imagemap_activity_task::after_restore() remaps it.
@@ -119,6 +121,7 @@ class restore_imagemap_activity_structure_step extends restore_activity_structur
         global $DB;
 
         $data = (object)$data;
+        $data->css_text = \mod_imagemap\local\css_rules::clean($data->css_text ?? null);
 
         // CSS examples are global, but we restore them to ensure availability.
         // Check if this example already exists to avoid duplicates.

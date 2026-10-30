@@ -45,8 +45,8 @@ class css_example_form extends \moodleform {
         $types = [
             'active' => get_string('activefilter', 'imagemap'),
             'inactive' => get_string('inactivefilter', 'imagemap'),
-            'acthover' => get_string('activefilterhover', 'imagemap'),
-            'inahover' => get_string('inactivefilterhover', 'imagemap'),
+            'acthover' => get_string('acthoverfilter', 'imagemap'),
+            'inahover' => get_string('inahoverfilter', 'imagemap'),
         ];
         $mform->addElement('select', 'type', get_string('type', 'imagemap'), $types);
         $mform->setType('type', PARAM_ALPHA);

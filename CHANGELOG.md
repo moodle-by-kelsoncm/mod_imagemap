@@ -8,6 +8,14 @@ All notable changes to the Image Map module will be documented in this file.
 - Course restore now finds the restore classes: they moved from `restore/moodle2/` to `backup/moodle2/`, where Moodle looks for them (#2).
 - Area targets are remapped after the whole course is restored, so links to activities placed after the image map are kept; links to items outside the backup are kept only when they belong to the same course (e.g. when duplicating the activity).
 - Files of the activity description are included in backup and restore.
+- Replace the deprecated `print_error()` with `moodle_exception` (#3).
+- Area CSS is no longer read with `PARAM_RAW`: area filters and CSS examples keep only an allowed list of visual properties with plain values (`\mod_imagemap\local\css_rules`), also on import and restore (#5).
+- `area_save.php` checks that the image map belongs to the course module whose capability is checked.
+- Missing language strings for the hover types of CSS examples (#11).
+
+### Changed
+- Standard Moodle boilerplate in JavaScript, CSS and Mustache files; templates document their context (#7).
+- `editor.css` and `styles/admin.css` merged into `styles.css`, scoped to `.path-mod-imagemap`; no more manual `$PAGE->requires->css()` (#10).
 
 ## [1.2.5] - 2026-03-09
 

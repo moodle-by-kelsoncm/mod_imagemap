@@ -49,7 +49,7 @@ if ($data = $form->get_data()) {
     $record = new stdClass();
     $record->type = $dbtype;
     $record->name = $data->name;
-    $record->css_text = $data->css_text;
+    $record->css_text = \mod_imagemap\local\css_rules::clean($data->css_text);
     $record->sortorder = $data->sortorder;
 
     if ($example) {
