@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_imagemap';
 $plugin->release = '1.2.08';
-$plugin->version = 2026031108; // backup/restore and generator updates.
-$plugin->requires = 2023041000; // Moodle 4.1 or later.
+$plugin->version = 2026103000; // External services of the area editor.
+$plugin->requires = 2024100700; // Moodle 4.5 LTS or later.
 $plugin->maturity = MATURITY_ALPHA;

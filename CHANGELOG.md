@@ -14,6 +14,8 @@ All notable changes to the Image Map module will be documented in this file.
 - Missing language strings for the hover types of CSS examples (#11).
 
 ### Changed
+- The area editor saves coordinates and connection lines through the external services `mod_imagemap_update_area_coords`, `mod_imagemap_save_line` and `mod_imagemap_delete_line` (`core/ajax`), with capability checks inside the services; `area_update_coords.php`, `line_save.php` and `line_delete.php` were removed (#8). `save_line` also checks that both areas belong to the image map of the course module.
+- Requires Moodle 4.5 LTS or later.
 - Standard Moodle boilerplate in JavaScript, CSS and Mustache files; templates document their context (#7).
 - `editor.css` and `styles/admin.css` merged into `styles.css`, scoped to `.path-mod-imagemap`; no more manual `$PAGE->requires->css()` (#10).
 
