@@ -81,14 +81,8 @@ class restore_imagemap_activity_structure_step extends restore_activity_structur
         $data = (object)$data;
         $data->imagemapid = $this->get_new_parentid('imagemap');
 
-        // Handle target types for internal links.
-        if ($data->targettype == 'module') {
-            // Module links need remapping to the new course context.
-            $data->targetid = $this->get_mappingid('course_module', $data->targetid);
-        } else if ($data->targettype == 'section') {
-            // Section links also need remapping to the new course context.
-            $data->targetid = $this->get_mappingid('course_section', $data->targetid);
-        }
+        // The targetid keeps the old course module or section id for now: activities after this one
+        // are not restored yet. restore_imagemap_activity_task::after_restore() remaps it.
 
         $newitemid = $DB->insert_record('imagemap_area', $data);
         $this->set_mapping('imagemap_area', $data->id, $newitemid);
@@ -156,6 +150,7 @@ class restore_imagemap_activity_structure_step extends restore_activity_structur
      */
     protected function after_execute() {
         // Add imagemap files, no need to match by itemname (just internally handled context files).
+        $this->add_related_files('mod_imagemap', 'intro', null);
         $this->add_related_files('mod_imagemap', 'image', null);
     }
 }

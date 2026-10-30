@@ -81,6 +81,7 @@ class backup_imagemap_activity_structure_step extends backup_activity_structure_
         $cssexample->set_source_table('imagemap_css_examples', []);
 
         // Define file annotations.
+        $imagemap->annotate_files('mod_imagemap', 'intro', null);
         $imagemap->annotate_files('mod_imagemap', 'image', null);
 
         // Return the root element wrapped into the standard activity structure.

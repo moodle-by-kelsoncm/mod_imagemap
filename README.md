@@ -143,8 +143,7 @@ See [TESTING.md](TESTING.md) for more troubleshooting.
 
 ```
 mod_imagemap/
-├── backup/moodle2/          # Backup implementation
-├── restore/moodle2/         # Restore implementation
+├── backup/moodle2/          # Backup and restore implementation
 ├── classes/
 │   ├── event/              # Activity logging
 │   ├── form/               # Form classes

@@ -25,8 +25,6 @@
 namespace mod_imagemap;
 
 use backup;
-use backup_imagemap_activity_task;
-use restore_imagemap_activity_task;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,8 +36,6 @@ require_once($CFG->dirroot . '/backup/moodle2/backup_activity_task.class.php');
 require_once($CFG->dirroot . '/backup/moodle2/restore_stepslib.php');
 require_once($CFG->dirroot . '/backup/moodle2/restore_activity_task.class.php');
 require_once($CFG->libdir . '/phpunit/classes/restore_date_testcase.php');
-require_once($CFG->dirroot . '/mod/imagemap/backup/moodle2/backup_imagemap_activity_task.class.php');
-require_once($CFG->dirroot . '/mod/imagemap/restore/moodle2/restore_imagemap_activity_task.class.php');
 
 /**
  * Unit test class for backup/restore functionality
@@ -62,20 +58,6 @@ final class backup_restore_test extends \restore_date_testcase {
         $this->resetAfterTest(true);
         // Admin user is always ID 2.
         $this->userid = 2;
-    }
-
-    /**
-     * Test backup class exists
-     */
-    public function test_backup_class_exists(): void {
-        $this->assertTrue(class_exists('backup_imagemap_activity_task', false));
-    }
-
-    /**
-     * Test restore class exists
-     */
-    public function test_restore_class_exists(): void {
-        $this->assertTrue(class_exists('restore_imagemap_activity_task', false));
     }
 
     /**
@@ -190,7 +172,7 @@ final class backup_restore_test extends \restore_date_testcase {
             );
 
             $this->assertTrue($rc->execute_precheck());
-            $this->assertTrue($rc->execute_plan());
+            $rc->execute_plan();
 
             // Verify restored content.
             $restoredimagemap = $DB->get_record('imagemap', [
@@ -209,7 +191,11 @@ final class backup_restore_test extends \restore_date_testcase {
             $this->assertEquals('circle', $restoredarea->shape);
             $this->assertEquals('Test Area', $restoredarea->title);
             $this->assertEquals('section', $restoredarea->targettype);
-            $this->assertNotEmpty($restoredarea->targetid);
+            $restoredsectionid = $DB->get_field('course_sections', 'id', [
+                'course' => $targetcourse->id,
+                'section' => 0,
+            ], MUST_EXIST);
+            $this->assertEquals($restoredsectionid, $restoredarea->targetid);
         } finally {
             if ($rc) {
                 $rc->destroy();
@@ -310,9 +296,12 @@ final class backup_restore_test extends \restore_date_testcase {
 
             $this->assertCount(1, $restoredareas);
             $restoredarea = reset($restoredareas);
-            // The module ID should be remapped (not the old $forum->cmid).
-            $this->assertNotNull($restoredarea->targetid);
-            $this->assertNotEquals($forum->cmid, $restoredarea->targetid);
+            // The module ID must point to the restored forum of the target course.
+            $restoredforumcmid = $DB->get_field('course_modules', 'id', [
+                'course' => $targetcourse->id,
+                'module' => $DB->get_field('modules', 'id', ['name' => 'forum']),
+            ], MUST_EXIST);
+            $this->assertEquals($restoredforumcmid, $restoredarea->targetid);
         } finally {
             if ($rc) {
                 $rc->destroy();
@@ -438,5 +427,95 @@ final class backup_restore_test extends \restore_date_testcase {
                 $bc->destroy();
             }
         }
+    }
+
+    /**
+     * Back up and restore a course into a new course.
+     *
+     * @param int $courseid Source course id.
+     * @return int Id of the new course.
+     */
+    private function backup_and_restore_course(int $courseid): int {
+        global $CFG;
+
+        $bc = new \backup_controller(backup::TYPE_1COURSE, $courseid, backup::FORMAT_MOODLE,
+            backup::INTERACTIVE_NO, backup::MODE_GENERAL, $this->userid);
+        $backupid = $bc->get_backupid();
+        $bc->execute_plan();
+        $results = $bc->get_results();
+        $results['backup_destination']->extract_to_pathname(get_file_packer('application/vnd.moodle.backup'),
+            $CFG->tempdir . '/backup/' . $backupid);
+        $bc->destroy();
+
+        $newcourseid = \restore_dbops::create_new_course('Restored', 'R' . $courseid, get_course($courseid)->category);
+        $rc = new \restore_controller($backupid, $newcourseid, backup::INTERACTIVE_NO, backup::MODE_GENERAL,
+            $this->userid, backup::TARGET_NEW_COURSE);
+        $this->assertTrue($rc->execute_precheck());
+        $rc->execute_plan();
+        $rc->destroy();
+
+        return $newcourseid;
+    }
+
+    /**
+     * An area that links to an activity placed after the image map is remapped too.
+     */
+    public function test_restore_remaps_module_restored_after_imagemap(): void {
+        global $DB;
+
+        $course = $this->getDataGenerator()->create_course();
+        $imagemap = $this->getDataGenerator()->create_module('imagemap', ['course' => $course->id]);
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
+        $DB->insert_record('imagemap_area', (object)[
+            'imagemapid' => $imagemap->id,
+            'shape' => 'rect',
+            'coords' => '10,10,100,100',
+            'targettype' => 'module',
+            'targetid' => $page->cmid,
+            'title' => 'Page link',
+            'sortorder' => 0,
+        ]);
+
+        $newcourseid = $this->backup_and_restore_course($course->id);
+
+        $newimagemapid = $DB->get_field('imagemap', 'id', ['course' => $newcourseid], MUST_EXIST);
+        $newpagecmid = $DB->get_field('course_modules', 'id', [
+            'course' => $newcourseid,
+            'module' => $DB->get_field('modules', 'id', ['name' => 'page']),
+        ], MUST_EXIST);
+        $area = $DB->get_record('imagemap_area', ['imagemapid' => $newimagemapid], '*', MUST_EXIST);
+        $this->assertEquals($newpagecmid, $area->targetid);
+    }
+
+    /**
+     * Duplicating the activity keeps the links to activities of the same course.
+     */
+    public function test_duplicate_keeps_targets_in_same_course(): void {
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/course/lib.php');
+
+        $course = $this->getDataGenerator()->create_course();
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
+        $imagemap = $this->getDataGenerator()->create_module('imagemap', ['course' => $course->id]);
+        $DB->insert_record('imagemap_area', (object)[
+            'imagemapid' => $imagemap->id,
+            'shape' => 'rect',
+            'coords' => '10,10,100,100',
+            'targettype' => 'module',
+            'targetid' => $page->cmid,
+            'title' => 'Page link',
+            'sortorder' => 0,
+        ]);
+
+        $this->setAdminUser();
+        if (method_exists(\core_courseformat\local\cmactions::class, 'duplicate')) {
+            // Moodle 5.2 and later.
+            $newcm = \core_courseformat\formatactions::cm($course)->duplicate($imagemap->cmid);
+        } else {
+            $newcm = duplicate_module($course, get_fast_modinfo($course)->get_cm($imagemap->cmid));
+        }
+
+        $area = $DB->get_record('imagemap_area', ['imagemapid' => $newcm->instance], '*', MUST_EXIST);
+        $this->assertEquals($page->cmid, $area->targetid);
     }
 }

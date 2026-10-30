@@ -2,6 +2,13 @@
 
 All notable changes to the Image Map module will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- Course restore now finds the restore classes: they moved from `restore/moodle2/` to `backup/moodle2/`, where Moodle looks for them (#2).
+- Area targets are remapped after the whole course is restored, so links to activities placed after the image map are kept; links to items outside the backup are kept only when they belong to the same course (e.g. when duplicating the activity).
+- Files of the activity description are included in backup and restore.
+
 ## [1.2.5] - 2026-03-09
 
 ### Added

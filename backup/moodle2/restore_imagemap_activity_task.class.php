@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/imagemap/restore/moodle2/restore_imagemap_stepslib.php');
+require_once($CFG->dirroot . '/mod/imagemap/backup/moodle2/restore_imagemap_stepslib.php');
 
 /**
  * Restore task class for mod_imagemap
@@ -47,6 +47,39 @@ class restore_imagemap_activity_task extends restore_activity_task {
     protected function define_my_steps() {
         // As this activity can have files, use one extra step to handle them.
         $this->add_step(new restore_imagemap_activity_structure_step('imagemap_structure', 'imagemap.xml'));
+    }
+
+    /**
+     * Remap the targets of the restored areas once the whole course is restored.
+     *
+     * A target without a mapping was not part of the backup: it is kept when it belongs to the
+     * course being restored into (e.g. duplicating the activity) and cleared otherwise.
+     */
+    public function after_restore() {
+        global $DB;
+
+        $itemnames = ['module' => 'course_module', 'section' => 'course_section'];
+        $tables = ['module' => 'course_modules', 'section' => 'course_sections'];
+        $courseid = $this->get_courseid();
+
+        $areas = $DB->get_records('imagemap_area', ['imagemapid' => $this->get_activityid()], '', 'id, targettype, targetid');
+        foreach ($areas as $area) {
+            if (!isset($itemnames[$area->targettype]) || empty($area->targetid)) {
+                continue;
+            }
+            $mapping = restore_dbops::get_backup_ids_record($this->get_restoreid(), $itemnames[$area->targettype],
+                $area->targetid);
+            if ($mapping && $mapping->newitemid) {
+                $newid = (int)$mapping->newitemid;
+            } else if ($DB->record_exists($tables[$area->targettype], ['id' => $area->targetid, 'course' => $courseid])) {
+                $newid = (int)$area->targetid;
+            } else {
+                $newid = 0;
+            }
+            if ($newid !== (int)$area->targetid) {
+                $DB->set_field('imagemap_area', 'targetid', $newid, ['id' => $area->id]);
+            }
+        }
     }
 
     /**
