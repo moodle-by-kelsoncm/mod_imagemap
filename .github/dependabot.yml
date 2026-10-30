@@ -1,18 +1,10 @@
 version: 2
 updates:
-  # Composer dependencies
-  - package-ecosystem: "composer"
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    labels:
-      - "dependencies"
-      - "composer"
-    reviewers:
-      - "kelsoncm"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    open-pull-requests-limit: 5
+  - package-ecosystem: "pip"
+    directory: "/docs"
+    schedule:
+      interval: "weekly"

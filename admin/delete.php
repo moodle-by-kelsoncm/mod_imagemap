@@ -25,7 +25,7 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/lib.php');
 
-mod_imagemap_admin_require_access();
+require_admin();
 mod_imagemap_admin_setup_page('/mod/imagemap/admin/delete.php');
 
 $id = required_param('id', PARAM_INT);

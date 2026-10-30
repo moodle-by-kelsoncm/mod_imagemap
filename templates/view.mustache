@@ -19,13 +19,15 @@
 
     Image map shown to students, with the clickable areas drawn over the image.
 
+    The config is the JSON read by mod_imagemap/view: image URL, areas and lines.
+
     Example context (json):
-    {"has_image": true, "imagemap_id": 1}
+    {"has_image": true, "imagemap_id": 1, "config": "{\"imageurl\": \"\", \"areas\": [], \"lines\": []}"}
 }}
 {{#has_image}}
-<div class="imagemap-container" style="position: relative; display: inline-block;">
-    <canvas id="imagemap-canvas-{{imagemap_id}}" style="display: block;"></canvas>
-    <div id="imagemap-overlays-{{imagemap_id}}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+<div id="imagemap-view-{{imagemap_id}}" class="imagemap-view" data-config="{{config}}">
+    <canvas></canvas>
+    <div class="imagemap-overlays"></div>
 </div>
 {{#has_manage}}
 <div class="imagemap-manage">

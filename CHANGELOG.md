@@ -2,7 +2,13 @@
 
 All notable changes to the Image Map module will be documented in this file.
 
-## [Unreleased]
+## 1.3.0 - 2026-10-30
+
+Changes requested by the Moodle Marketplace review and alignment with the EduPlay Moodle Suite practices.
+
+### Removed
+- `lang/pt_br`: only English is shipped; translations go through AMOS.
+- Local tooling that the CI now covers: `.githooks`, `.pre-commit-config.yaml`, `setup-hooks.sh`, `run-ci.sh`, `docker-compose.yml`, `composer.json`; the built documentation (`docs/_build`) is no longer versioned.
 
 ### Fixed
 - Course restore now finds the restore classes: they moved from `restore/moodle2/` to `backup/moodle2/`, where Moodle looks for them (#2).
@@ -15,9 +21,18 @@ All notable changes to the Image Map module will be documented in this file.
 
 ### Changed
 - The area editor saves coordinates and connection lines through the external services `mod_imagemap_update_area_coords`, `mod_imagemap_save_line` and `mod_imagemap_delete_line` (`core/ajax`), with capability checks inside the services; `area_update_coords.php`, `line_save.php` and `line_delete.php` were removed (#8). `save_line` also checks that both areas belong to the image map of the course module.
-- Requires Moodle 4.5 LTS or later.
+- Requires Moodle 4.5 LTS or later; supports 4.5 LTS and 5.3 LTS (`$plugin->supported`).
+- CI on GitHub Actions with `moodle-plugin-ci` on Moodle 4.5 and 5.3 (PostgreSQL and MariaDB), code checker and PHPDoc without warnings; release by draft (*Prepare release*) and verification of the published release (#20).
+- Documentation rewritten in English and Brazilian Portuguese (`docs/en`, `docs/pt_BR`) with screenshots, published on GitHub Pages.
+- JavaScript moved to ES6 AMD modules built with grunt (`amd/build`): `mod_imagemap/editor` (the area editor, previously `editor.js` injected inline), `mod_imagemap/view`, `mod_imagemap/admin`, `mod_imagemap/css_preview` and `mod_imagemap/shapes`; the unused `summary.js` and `editor_init.js` were removed (#4, #6, #9).
+- Pages render through templates and start their modules with `js_call_amd()`; area data travels in a `data-config` attribute instead of inline JavaScript. Deletions ask for confirmation through `core/notification` instead of inline `onclick` handlers (#9).
 - Standard Moodle boilerplate in JavaScript, CSS and Mustache files; templates document their context (#7).
 - `editor.css` and `styles/admin.css` merged into `styles.css`, scoped to `.path-mod-imagemap`; no more manual `$PAGE->requires->css()` (#10).
+
+### Fixed (editor and viewer)
+- The editor template used `{{else}}`, which Mustache does not support, so the missing-image warning never showed.
+- Adding or removing a polygon vertex with a double click is now saved.
+- The restriction message of an inactive area shows the names of the activities it refers to (`core_availability\info::format_info()`).
 
 ## [1.2.5] - 2026-03-09
 
