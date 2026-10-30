@@ -976,6 +976,7 @@ export const init = (selector) => {
                 coords.splice(handle, 2); // Remove x,y pair
                 selectedArea.coords = coords.join(',');
                 drawBase();
+                saveAreaCoords(selectedArea);
                 return;
             }
 
@@ -986,6 +987,7 @@ export const init = (selector) => {
                 coords.splice(edgeInfo.after, 0, x, y);
                 selectedArea.coords = coords.join(',');
                 drawBase();
+                saveAreaCoords(selectedArea);
                 return;
             }
         }
@@ -1011,9 +1013,7 @@ export const init = (selector) => {
         }
 
         if (!drawing) {
-
             return;
-
         }
 
         let rect = canvas.getBoundingClientRect();

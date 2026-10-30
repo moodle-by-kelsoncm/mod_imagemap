@@ -48,7 +48,7 @@ function imagemap_supports($feature) {
  * Saves a new instance of the imagemap into the database
  *
  * @param stdClass $imagemap An object from the form in mod_form.php
- * @param mod_imagemap_mod_form $mform The form instance
+ * @param mod_imagemap_mod_form|null $mform The form instance
  * @return int The id of the newly inserted imagemap record
  */
 function imagemap_add_instance(stdClass $imagemap, ?mod_imagemap_mod_form $mform = null) {
@@ -71,7 +71,7 @@ function imagemap_add_instance(stdClass $imagemap, ?mod_imagemap_mod_form $mform
  * Updates an instance of the imagemap in the database
  *
  * @param stdClass $imagemap An object from the form in mod_form.php
- * @param mod_imagemap_mod_form $mform The form instance
+ * @param mod_imagemap_mod_form|null $mform The form instance
  * @return boolean Success/Fail
  */
 function imagemap_update_instance(stdClass $imagemap, ?mod_imagemap_mod_form $mform = null) {
@@ -350,7 +350,8 @@ function imagemap_get_area_target_data($area, $course, $context, $cminfo) {
         $cminfotarget = $modinfo->get_cm($cm->id);
         $data['url'] = new moodle_url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]);
         if (!$data['active']) {
-            $info = $cminfotarget->availableinfo ?? '';
+            // Resolve the placeholders (activity names, etc.) of the availability message.
+            $info = \core_availability\info::format_info($cminfotarget->availableinfo ?? '', $course);
             $tooltip = trim(strip_tags(format_text($info, FORMAT_HTML, ['context' => $context])));
             $data['tooltip'] = $tooltip !== '' ? $tooltip : get_string('arearestricted', 'imagemap');
         }
@@ -376,7 +377,8 @@ function imagemap_get_area_target_data($area, $course, $context, $cminfo) {
         }
 
         if (!$data['active']) {
-            $info = $section->availableinfo ?? '';
+            // Resolve the placeholders (activity names, etc.) of the availability message.
+            $info = \core_availability\info::format_info($section->availableinfo ?? '', $course);
             $tooltip = trim(strip_tags(format_text($info, FORMAT_HTML, ['context' => $context])));
             $data['tooltip'] = $tooltip !== '' ? $tooltip : get_string('arearestricted', 'imagemap');
         }
