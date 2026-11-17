@@ -39,5 +39,5 @@ Main features
 Links
 -----
 
-* Source code and issues: https://github.com/moodle-by-kelsoncm/mod_imagemap
+* Source code and issues: https://github.com/moodle-by-kelsoncm/moodle-mod_imagemap
 * Moodle Marketplace: https://marketplace.moodle.com/plugins/mod_imagemap

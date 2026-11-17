@@ -39,5 +39,5 @@ Principais recursos
 Links
 -----
 
-* Código-fonte e issues: https://github.com/moodle-by-kelsoncm/mod_imagemap
+* Código-fonte e issues: https://github.com/moodle-by-kelsoncm/moodle-mod_imagemap
 * Moodle Marketplace: https://marketplace.moodle.com/plugins/mod_imagemap

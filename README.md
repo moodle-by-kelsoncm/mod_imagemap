@@ -2,7 +2,7 @@
 
 [English](#english) · [Português (Brasil)](#português-brasil)
 
-Documentation / Documentação: <https://moodle-by-kelsoncm.github.io/mod_imagemap/>
+Documentation / Documentação: <https://moodle-by-kelsoncm.github.io/moodle-mod_imagemap/>
 
 ## English
 
@@ -24,7 +24,7 @@ Instalação: copie este repositório para `mod/imagemap` (`public/mod/imagemap`
 
 ## Support and privacy / Suporte e privacidade
 
-- Issue tracker / Rastreador de issues: <https://github.com/moodle-by-kelsoncm/mod_imagemap/issues>
+- Issue tracker / Rastreador de issues: <https://github.com/moodle-by-kelsoncm/moodle-mod_imagemap/issues>
 - Privacy / Privacidade: the plugin stores no personal data (Privacy API null provider) / o plugin não guarda dados pessoais.
 - Translations / Traduções: only English is shipped; other languages go through AMOS / o pacote traz só inglês; outros idiomas via AMOS.
 
