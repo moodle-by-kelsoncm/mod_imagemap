@@ -10,7 +10,7 @@ Requisitos
 A partir de um ZIP
 ------------------
 
-1. Baixe ``mod_imagemap-<versão>.zip`` das `releases <https://github.com/moodle-by-kelsoncm/mod_imagemap/releases>`_ ou do Moodle Marketplace.
+1. Baixe ``mod_imagemap-<versão>.zip`` das `releases <https://github.com/moodle-by-kelsoncm/moodle-mod_imagemap/releases>`_ ou do Moodle Marketplace.
 2. Acesse *Administração do site > Plugins > Instalar plugins*, envie o ZIP e siga os passos.
 3. Conclua a atualização em *Administração do site > Notificações*.
 
@@ -21,7 +21,7 @@ Copie o repositório para ``mod/imagemap`` (``public/mod/imagemap`` no Moodle 5.
 
 .. code-block:: bash
 
-   git clone https://github.com/moodle-by-kelsoncm/mod_imagemap.git public/mod/imagemap
+   git clone https://github.com/moodle-by-kelsoncm/moodle-mod_imagemap.git public/mod/imagemap
 
 Idiomas
 -------
