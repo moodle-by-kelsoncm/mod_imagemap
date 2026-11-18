@@ -2,6 +2,11 @@
 
 All notable changes to the Image Map module will be documented in this file.
 
+## 1.3.1 - 2026-11-18
+
+### Changed
+- README and documentation point to the repository renamed to `moodle-by-kelsoncm/moodle-mod_imagemap`.
+
 ## 1.3.0 - 2026-10-30
 
 Changes requested by the Moodle Marketplace review and alignment with the EduPlay Moodle Suite practices.
