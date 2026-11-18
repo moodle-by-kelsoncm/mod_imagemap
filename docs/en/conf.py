@@ -3,7 +3,7 @@ import moodle_docs_theme
 project = "moodle-mod_imagemap"
 copyright = "2026, Kelson C. M."
 author = "Kelson C. M."
-release = "1.3.0"
+release = "1.3.1"
 
 extensions = [
     "sphinx.ext.githubpages",
